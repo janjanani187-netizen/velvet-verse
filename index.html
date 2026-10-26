@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velvet Verse — Poetry After Dark</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #100c13;
+      color: #f4e9e6;
+      font-family: Georgia, serif;
+    }
+
+    header {
+      padding: 22px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #382631;
+    }
+
+    .logo {
+      color: #e7b6c4;
+      font-size: 24px;
+      letter-spacing: 1px;
+    }
+
+    nav a {
+      color: #d6c2cc;
+      text-decoration: none;
+      margin-left: 18px;
+      font-size: 14px;
+    }
+
+    .hero {
+      padding: 75px 20px 55px;
+      text-align: center;
+      background: radial-gradient(ellipse at top, #462235, #100c13 70%);
+    }
+
+    .eyebrow {
+      color: #dba5b7;
+      letter-spacing: 4px;
+      font-size: 11px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 8vw, 76px);
+      font-weight: normal;
+      margin: 20px 0;
+    }
+
+    h1 em { color: #dba5b7; }
+
+    .hero p {
+      color: #c4b2bc;
+      line-height: 1.8;
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    button {
+      cursor: pointer;
+      border: 1px solid #9d6178;
+      border-radius: 5px;
+      background: #9d6178;
+      color: white;
+      padding: 11px 16px;
+    }
+
+    .hero button { margin-top: 20px; }
+
+    .section {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 35px 22px;
+    }
+
+    .section h2 { font-weight: normal; font-size: 29px; }
+
+    .filters {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .filters button { background: transparent; }
+
+    .filters button.active {
+      background: #9d6178;
+    }
+
+    input, select, textarea {
+      background: #1d1520;
+      color: #f4e9e6;
+      border: 1px solid #59404e;
+      border-radius: 5px;
+      padding: 12px;
+      width: 100%;
+      margin: 6px 0 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+    }
+
+    .poem-card {
+      background: #1a131c;
+      border: 1px solid #382631;
+      padding: 24px;
+      border-radius: 8px;
+    }
+
+    .poem-card .mood {
+      color: #dba5b7;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .poem-card h3 { font-size: 23px; font-weight: normal; }
+
+    .preview {
+      color: #c8b9c2;
+      white-space: pre-line;
+      line-height: 1.8;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .card-actions button { flex: 1; }
+
+    .secondary { background: transparent; }
+
+    .panel {
+      background: #1a131c;
+      border: 1px solid #382631;
+      padding: 24px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .hidden { display: none !important; }
+
+    #reader {
+      white-space: pre-line;
+      line-height: 2.1;
+      color: #e5d5dd;
+      font-size: 18px;
+    }
+
+    #readerTitle { font-size: 32px; font-weight: normal; }
+
+    .message { color: #dba5b7; }
+
+    footer {
+      border-top: 1px solid #382631;
+      padding: 28px 20px;
+      text-align: center;
+      color: #aa98a4;
+    }
+
+    @media (max-width: 500px) {
+      header { padding: 18px; }
+      nav a { margin-left: 8px; font-size: 12px; }
+      .hero { padding-top: 55px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Velvet Verse ♡</div>
+    <nav>
+      <a href="#discover">Discover</a>
+      <a href="#write">Write</a>
+      <a href="#saved">Saved</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">A LITTLE CORNER OF THE INFINITE</div>
+    <h1>Some feelings<br>become <em>poetry.</em></h1>
+    <p>For the words we whisper, the pages we hide,<br>
+       and the feelings that stay after midnight.</p>
+    <button onclick="document.getElementById('discover').scrollIntoView({behavior:'smooth'})">
+      Enter the poetry room ↗
+    </button>
+  </section>
+
+  <main>
+    <section class="section" id="discover">
+      <p class="eyebrow">THE COLLECTION</p>
+      <h2>Find words for your world.</h2>
+
+      <input id="search" placeholder="Search poems, writers or moods...">
+
+      <div class="filters" id="filters"></div>
+      <div class="grid" id="poemGrid"></div>
+
+      <div class="panel hidden" id="readerPanel">
+        <button class="secondary" onclick="closeReader()">← Back to poems</button>
+        <p class="eyebrow" id="readerMood"></p>
+        <h2 id="readerTitle"></h2>
+        <p class="muted" id="readerAuthor"></p>
+        <div id="reader"></div>
+        <button id="readerSave" style="margin-top:20px">♡ Save poem</button>
+      </div>
+    </section>
+
+    <section class="section" id="write">
+      <p class="eyebrow">YOUR WORDS MATTER</p>
+      <h2>Leave a little of yourself here.</h2>
+      <p class="preview">Write a poem. Give it a name. Let it exist.</p>
+
+      <form class="panel" id="writeForm">
+        <label for="title">Poem title</label>
+        <input id="title" maxlength="100" required placeholder="A title for your thoughts">
+
+        <label for="author">Pen name</label>
+        <input id="author" maxlength="50" placeholder="Anonymous">
+
+        <label for="mood">Mood</label>
+        <select id="mood">
+          <option>Love</option>
+          <option>Longing</option>
+          <option>Heartbreak</option>
+          <option>Healing</option>
+          <option>Hope</option>
+          <option>Life</option>
+        </select>
+
+        <label for="content">Your poem</label>
+        <textarea id="content" rows="7" maxlength="5000" required
+          placeholder="Dear midnight, ..."></textarea>
+
+        <button type="submit">Publish on this device ♡</button>
+        <p class="message" id="writeMessage" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="section" id="saved">
+      <p class="eyebrow">KEPT CLOSE</p>
+      <h2>Your saved poems.</h2>
+      <div class="grid" id="savedGrid"></div>
+      <p class="preview" id="savedEmpty">Your favourite words will live here.</p>
+    </section>
+  </main>
+
+  <footer>Velvet Verse · Made for the love of words ♡</footer>
+
+  <script>
+    const samples = [
+      {
+        id: "sample-1",
+        title: "The Hours Between",
+        author: "Velvet Verse",
+        mood: "Longing",
+        content: "The night knows things\nthat daylight never will.\n\nThe names we keep in silence,\nthe hearts that linger still.\n\nSome goodbyes have no ending;\nsome echoes never leave.\nAnd some people become poems\nwe are too afraid to read."
+      },
+      {
+        id: "sample-2",
+        title: "A Softer Kind of Brave",
+        author: "Velvet Verse",
+        mood: "Healing",
+        content: "Perhaps growing is learning\nto leave a light on for yourself.\n\nTo stop asking closed doors\nwhy they would not open.\n\nTo find that even quietly,\neven slowly,\nyou are becoming someone\nyou can call home."
+      },
+      {
+        id: "sample-3",
+        title: "Almost",
+        author: "Velvet Verse",
+        mood: "Love",
+        content: "We were an almost,\na sentence without its end.\n\nTwo strangers holding secrets,\ntoo afraid to call them plans.\n\nAnd still, somewhere in my memory,\nyour name sounds like a song\nI never learned to finish."
+      },
+      {
+        id: "sample-4",
+        title: "Tomorrow's Window",
+        author: "Velvet Verse",
+        mood: "Hope",
+        content: "The sky does not promise sunshine.\nIt only opens, every day.\n\nAnd sometimes that is enough:\na little room,\na little breath,\na chance to try another way."
+      }
+    ];
+
+    const storageKey = "velvet-verse-v1";
+
+    let poems = [...samples];
+    let saved = [];
+    let activeMood = "All";
+    let openedId = null;
+
+    try {
+      const data = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      if (Array.isArray(data.poems)) poems.push(...data.poems);
+      if (Array.isArray(data.saved)) saved = data.saved;
+    } catch {
+      console.warn("Saved website data could not be read.");
+    }
+
+    function persist() {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify({
+          poems: poems.filter(p => !p.id.startsWith("sample-")),
+          saved
+        }));
+        return true;
+      } catch {
+        alert("Browser storage is unavailable or full. Your changes may not persist.");
+        return false;
+      }
+    }
+
+    function makeButton(label, action, secondary = false) {
+      const button = document.createElement("button");
+      button.textContent = label;
+      if (secondary) button.className = "secondary";
+      button.addEventListener("click", action);
+      return button;
+    }
+
+    function renderFilters() {
+      const filters = document.getElementById("filters");
+      filters.replaceChildren();
+
+      ["All", "Love", "Longing", "Heartbreak", "Healing", "Hope", "Life"]
+        .forEach(mood => {
+          const button = makeButton(mood, () => {
+            activeMood = mood;
+            renderFilters();
+            renderPoems();
+          }, true);
+
+          if (activeMood === mood) button.classList.add("active");
+          filters.append(button);
+        });
+    }
+
+    function createCard(poem) {
+      const card = document.createElement("article");
+      card.className = "poem-card";
+
+      const mood = document.createElement("div");
+      mood.className = "mood";
+      mood.textContent = poem.mood;
+
+      const title = document.createElement("h3");
+      title.textContent = poem.title;
+
+      const author = document.createElement("p");
+      author.className = "muted";
+      author.textContent = "by " + poem.author;
+
+      const preview = document.createElement("p");
+      preview.className = "preview";
+      preview.textContent = poem.content.length > 130
+        ? poem.content.slice(0, 130) + "…"
+        : poem.content;
+
+      const actions = document.createElement("div");
+      actions.className = "card-actions";
+
+      actions.append(
+        makeButton("Read poem", () => openReader(poem.id)),
+        makeButton(saved.includes(poem.id) ? "♥ Saved" : "♡ Save",
+          () => toggleSave(poem.id), true)
+      );
+
+      card.append(mood, title, author, preview, actions);
+      return card;
+    }
+
+    function renderPoems() {
+      const grid = document.getElementById("poemGrid");
+      const query = document.getElementById("search").value.toLowerCase().trim();
+      grid.replaceChildren();
+
+      const results = poems.filter(poem => {
+        const matchesMood = activeMood === "All" || poem.mood === activeMood;
+        const searchable = [poem.title, poem.author, poem.mood, poem.content]
+          .join(" ").toLowerCase();
+
+        return matchesMood && searchable.includes(query);
+      });
+
+      results.forEach(poem => grid.append(createCard(poem)));
+
+      if (!results.length) {
+        const empty = document.createElement("p");
+        empty.className = "preview";
+        empty.textContent = "No poems found. Try another search or mood.";
+        grid.append(empty);
+      }
+
+      renderSaved();
+    }
+
+    function openReader(id) {
+      const poem = poems.find(item => item.id === id);
+      if (!poem) return;
+
+      openedId = id;
+      document.getElementById("readerMood").textContent = poem.mood;
+      document.getElementById("readerTitle").textContent = poem.title;
+      document.getElementById("readerAuthor").textContent = "by " + poem.author;
+      document.getElementById("reader").textContent = poem.content;
+      document.getElementById("readerSave").textContent =
+        saved.includes(id) ? "♥ Saved" : "♡ Save poem";
+
+      document.getElementById("readerPanel").classList.remove("hidden");
+      document.getElementById("readerPanel").scrollIntoView({behavior: "smooth"});
+    }
+
+    function closeReader() {
+      document.getElementById("readerPanel").classList.add("hidden");
+      openedId = null;
+    }
+
+    function toggleSave(id) {
+      if (saved.includes(id)) {
+        saved = saved.filter(item => item !== id);
+      } else {
+        saved.push(id);
+      }
+
+      persist();
+      renderPoems();
+
+      if (openedId === id) {
+        document.getElementById("readerSave").textContent =
+          saved.includes(id) ? "♥ Saved" : "♡ Save poem";
+      }
+    }
+
+    function renderSaved() {
+      const grid = document.getElementById("savedGrid");
+      grid.replaceChildren();
+
+      const favourites = poems.filter(poem => saved.includes(poem.id));
+
+      document.getElementById("savedEmpty").hidden = favourites.length > 0;
+
+      favourites.forEach(poem => grid.append(createCard(poem)));
+    }
+
+    document.getElementById("readerSave").addEventListener("click", () => {
+      if (openedId) toggleSave(openedId);
+    });
+
+    document.getElementById("search").addEventListener("input", renderPoems);
+
+    document.getElementById("writeForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const title = document.getElementById("title").value.trim();
+      const author = document.getElementById("author").value.trim() || "Anonymous";
+      const mood = document.getElementById("mood").value;
+      const content = document.getElementById("content").value.trim();
+
+      if (!title || !content) return;
+
+      poems.unshift({
+        id: "user-" + Date.now() + "-" + Math.random().toString(36).slice(2),
+        title, author, mood, content
+      });
+
+      persist();
+      activeMood = "All";
+      renderFilters();
+      renderPoems();
+      event.target.reset();
+
+      document.getElementById("writeMessage").textContent =
+        "Your poem has been published on this device ♡";
+
+      document.getElementById("discover").scrollIntoView({behavior: "smooth"});
+    });
+
+    renderFilters();
+    renderPoems();
+  </script>
+</body>
+</html>
